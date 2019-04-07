@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>chat app node.js</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.js"></script>
+  <style>
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: Verdana;
+    <! -- background: #999; -- >
+  }
+  ul {
+    list-style-type: none;
+    padding: 20px;
+    bottom: 10%;
+    position: fixed;
+    <! -- background: #999; -- >
+    color: white;
+  }
+  #controls {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    padding: 20px;
+    display: block;
+    width: 100%;
+  }
+  #controls #msg {
+    float: left;
+    width: 90%;
+    display: block;
+    padding: 20px;
+  }
+  #controls #btn {
+    float: right;
+    padding: 20px;
+  }
+  </style>
+</head>
+<body>
+  <script>
+　　<!-- 通信用 -->
+    var socket = io();
+
+    <!-- jQueryの処理 -->
+    $(function() {
+　　<!-- サブミットボタンを押された処理 -->
+      $('form').submit(function() {
+　　　<!-- 入力フォームには入っている値を取得 -->
+        var message = $('#msg').val();
+　　　　　　　　　　　　　　　　
+　　　　<!-- 値がなかったら終了 -->
+        if (message === '') return false;
+
+　　　<!-- 全体にmessage処理（サーバーサイドにメッセージを渡す） -->
+        socket.emit('message', message);
+
+　　　　<!-- 入力フォームを空にしてフォーカスする -->
+        $('#msg').val('').focus();
+　　　　　　　　　　　　　　　　<!-- 処理終了 -->
+        return false;
+    });
+   });
+
+　　<!-- サーバーサイドから来たメッセージを挿入 -->
+    socket.on('message', function(msg, id) {
+      $('#message').append($('<li>').text(id + " : " + msg));
+    });
+  </script>
+  <ul id="message">
+
+  </ul>
+  <div id="controls">
+    <form action="">
+    <input type="text" id="msg" placeholder="Describe messages...">
+    <input type="submit" id="btn" value="Enter">
+    </form>
+ </div>
+</body>
+</html>
